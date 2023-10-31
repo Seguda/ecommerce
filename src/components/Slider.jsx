@@ -1,3 +1,4 @@
+import React from "react";
 import styled from "styled-components";
 import { ArrowRightOutlined, ArrowLeftOutlined } from "@material-ui/icons";
 import { sliderItems } from "../data";

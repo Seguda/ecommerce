@@ -1,3 +1,4 @@
+import React from "react";
 import { Announcements } from "../components/Announcements";
 import { Add, Remove } from "@material-ui/icons";
 import styled from "styled-components";
@@ -5,6 +6,11 @@ import NavBar from "../components/NavBar";
 import Newsletter from "../components/Newsletter";
 import Footer from "../components/Footer";
 import { mobile } from "../responsive";
+import { useLocation } from "react-router-dom/cjs/react-router-dom.min";
+import { useEffect, useState } from "react";
+import {publicRequest} from "../requestMethods";
+import { addProduct } from "../redux/cartRedux";
+import { useDispatch } from "react-redux";
 
 const Container = styled.div`
 
@@ -76,26 +82,53 @@ const Button = styled.button`
 `;
 
 export const Product = () => {
+    const location= useLocation();
+    const id = location.pathname.split("/")[2];
+    const[product, setProduct] = useState({});
+    const[quantity,setQuantity] = useState(1);
+    const dispatch = useDispatch();
+
+  useEffect(()=>{
+    const getProduct = async() => {
+    try{
+        const res = await publicRequest.get("/products/find/" + id)
+        setProduct(res.data);
+    }catch{}
+};
+    getProduct();
+  },[id])
+
+  const handleQuantity = (type) =>{
+    if(type === "dec") {
+        quantity >1 && setQuantity(quantity-1);
+    }else{
+        setQuantity(quantity + 1);
+    }
+  }; 
+
+  const handleClick = () =>{
+    dispatch(addProduct({product, quantity, price:product.price * quantity}))
+};
   return (
    <Container>
         <Announcements/>
         <NavBar/>
         <Wrapper>
             <ImgContainer>
-                <Img src="https://i.etsystatic.com/21314506/r/il/3bf3f7/2116195361/il_1588xN.2116195361_dmuw.jpg"/>
+                <Img src={product.img}/>
             </ImgContainer>
             <InfoContainer>
-                <Title>Pajama</Title>
-                <Desc>Le Le Le Sakine niye gittin duuugune!</Desc>
-                <Price>$20.99</Price>
+                <Title>{product.title}</Title>
+                <Desc>{product.desc}</Desc>
+                <Price>{product.price}</Price>
             
             <AddContainer>
                 <AmountContainer>
-                <Remove />
-                <Amount>1</Amount>
-                <Add/>
+                <Remove onClick = {() => handleQuantity("dec")} />
+                <Amount>{quantity}</Amount>
+                <Add onClick = {() => handleQuantity("inc")}/>
                 </AmountContainer>
-                <Button>ADD TO CART</Button>
+                <Button onClick = {handleClick}>ADD TO CART</Button>
             </AddContainer>
             </InfoContainer>
         </Wrapper>

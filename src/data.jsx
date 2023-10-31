@@ -25,18 +25,21 @@ export const sliderItems = [
 export const categories = [
   {
     id: 1,
-    img: "https://leapnatural.com/wp-content/uploads/2020/11/kedi-tirnagi-min-scaled.jpg",
+    img: "https://i.etsystatic.com/21314506/r/il/eb885d/3531231412/il_1588xN.3531231412_ht4k.jpg",
     title: "Home Textile",
+    cat: "Home"
   },
   {
     id: 2,
     img: "https://i.etsystatic.com/21314506/r/il/2ddaf7/3548964999/il_1588xN.3548964999_1rps.jpg",
     title: "Waldorf Dolls",
+    cat: "Toys"
   },
   {
     id: 3,
     img: "https://i.etsystatic.com/21314506/r/il/ddf139/2690774478/il_1588xN.2690774478_f8wi.jpg",
     title: "Scarves",
+    cat: "Accessories"
   },
 ];
 export const popularProducts = [

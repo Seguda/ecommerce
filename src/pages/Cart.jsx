@@ -1,9 +1,11 @@
+import React from "react";
 import { Add, Remove } from '@material-ui/icons';
 import styled from 'styled-components'
 import { Announcements } from '../components/Announcements';
 import Footer from '../components/Footer';
 import NavBar from '../components/NavBar';
 import { mobile } from '../responsive';
+import { useSelector } from "react-redux";
 
 const Container = styled.div`
 `;
@@ -132,6 +134,8 @@ const Button = styled.button`
 `;
 
 export const Cart = () => {
+    const cart = useSelector(state=>state.cart)
+    //console.log(cart);
   return (
     <Container> 
         <Announcements/>
@@ -148,47 +152,32 @@ export const Cart = () => {
             </Top>
             <Bottom>
                 <Info>
-                    <Product>
+                    {cart.products.map(obj =>(
+                    <Product key={obj.product._id}>
                     <ProductDetail>
-                        <Image src="https://i.etsystatic.com/21314506/r/il/3f4fd4/3501370798/il_1588xN.3501370798_cbx8.jpg"/>
+                        <Image src={obj.product.img}/>
                         <Details>
-                            <ProductName><b>Product:</b>YOGA MAT BAG</ProductName>
-                            <ProductId><b>ID:</b>987654321</ProductId>
+                            <ProductName><b>Product:</b>{obj.product.title}</ProductName>
+                            <ProductId><b>ID:</b>{obj.product._id}</ProductId>
                         </Details>
                     </ProductDetail>
                     <Price>
                         <ProductAmountContainer>
                             <Add />
-                            <ProductAmount>3</ProductAmount>
+                            <ProductAmount>{obj.quantity}</ProductAmount>
                             <Remove />
                         </ProductAmountContainer>
-                        <ProductPrice>$40</ProductPrice>
+                        <ProductPrice> $ {obj.price * obj.quantity}</ProductPrice>
                     </Price>
                      </Product>
-                     <Hr/>
-                     <Product>
-                    <ProductDetail>
-                        <Image src="https://i.etsystatic.com/21314506/r/il/32b2f1/3536070866/il_1588xN.3536070866_jf38.jpg"/>
-                        <Details>
-                            <ProductName><b>Product:</b>PLACEMAT</ProductName>
-                            <ProductId><b>ID:</b>9876543212</ProductId>
-                        </Details>
-                    </ProductDetail>
-                    <Price>
-                        <ProductAmountContainer>
-                            <Add />
-                            <ProductAmount>3</ProductAmount>
-                            <Remove />
-                        </ProductAmountContainer>
-                        <ProductPrice>$25</ProductPrice>
-                    </Price>
-                     </Product>
+                     ))}
+                    <Hr/> 
                 </Info>
                 <Summary>
                     <SummaryTitle>ORDER SUMMARY</SummaryTitle>
                     <SummaryItem>
                         <SummaryItemText>Subtotal</SummaryItemText>
-                        <SummaryItemPrice>$65</SummaryItemPrice>
+                        <SummaryItemPrice>{cart.total}</SummaryItemPrice>
                     </SummaryItem>
                      <SummaryItem>
                         <SummaryItemText>Estimated Shipping</SummaryItemText>
@@ -200,7 +189,7 @@ export const Cart = () => {
                     </SummaryItem>
                      <SummaryItem type="total">
                         <SummaryItemText>Total</SummaryItemText>
-                        <SummaryItemPrice>$65</SummaryItemPrice>
+                        <SummaryItemPrice>{cart.total}</SummaryItemPrice>
                     </SummaryItem>
                     <Button>CHECKOUT NOW</Button>
                 </Summary>
