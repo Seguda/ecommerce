@@ -84,3 +84,4 @@ export const Product = ({ item }) => {
     </Container>
   );
 };
+export default Product;

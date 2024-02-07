@@ -2,6 +2,7 @@ import React from "react";
 import { Facebook, Instagram, MailOutline, Phone, Pinterest, Room, Twitter } from "@material-ui/icons";
 import styled from "styled-components";
 import { mobile } from "../responsive";
+import { Link } from "react-router-dom/";
 
 const Container= styled.div`
     display:flex;
@@ -43,15 +44,16 @@ const Title=styled.h3`
     margin-bottom:30px;
 `;
 const List = styled.ul`
-    margin:0px;
-    padding:0px;
+    margin:20px;
+    padding:20px;
     list-style:none;
     display:flex;
     flex-wrap:wrap;
 `;
 const ListItem = styled.li`
-    width:50%;
+    width:70%;
     margin-bottom:10px;
+     margin:20px;
 `;
 const Right= styled.div`
     flex:1;
@@ -91,16 +93,11 @@ export const Footer = () => {
         <Center>
             <Title>Useful Links</Title>
                 <List>
-                    <ListItem>Home</ListItem>
-                    <ListItem>Cart</ListItem>
-                    <ListItem>Waldorf Dolls</ListItem>
-                    <ListItem>Doll Clothing</ListItem>
-                    <ListItem>Home Textile</ListItem>
-                    <ListItem>Purse</ListItem>
-                    <ListItem>Scarves</ListItem>
-                    <ListItem>Account</ListItem>
-                    <ListItem>Wishlist</ListItem>
-                    <ListItem>Terms</ListItem>
+                    <Link to="/"><ListItem>Home</ListItem></Link>
+                    <Link to="/productlist"><ListItem>Waldorf Dolls</ListItem></Link>
+                    <Link to="/cart"><ListItem>Cart</ListItem></Link>
+                    <Link to="/products"><ListItem>Home Textile</ListItem></Link>
+                    <Link to="/product"><ListItem>Accessories</ListItem></Link>
                 </List>
             
         </Center>

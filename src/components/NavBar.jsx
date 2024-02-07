@@ -3,8 +3,9 @@ import styled from "styled-components";
 import { Search, ShoppingCartOutlined } from "@material-ui/icons";
 import { Badge} from "@material-ui/core";
 import { mobile } from "../responsive";
-import {useSelector} from "react-redux";
-import { Link } from "react-router-dom/cjs/react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import { Link } from "react-router-dom/";
+import { logout } from "../redux/apiCalls";
 
 const Container = styled.div`
   height: 60px;
@@ -61,10 +62,19 @@ const MenuItem = styled.div`
   ${mobile({ fontSize:"12px", marginLeft:"6px" })}
 `;
 
-const NavBar = () => {
+export const NavBar = () => {
+  const user = useSelector((state) => state.user.currentUser);
 
-  const quantity= useSelector(state => state.cart.quantity)
+  const quantity= useSelector(state=>state.cart.products.reduce(
+  (accumulator, currentValue) => accumulator + currentValue.quantity,
+  0,
+)); 
 
+  const dispatch = useDispatch();
+  const handleClick = (e) =>{
+          e.preventDefault();
+          logout(dispatch);
+  }
   return (
     <Container>
       <Wrapper>
@@ -79,8 +89,16 @@ const NavBar = () => {
           <Logo>GinkgoIvyDesign</Logo>
         </Center>
         <Right>
-          <MenuItem>Register</MenuItem>
-          <MenuItem>SIGN IN</MenuItem>
+          { !user ? 
+          <div>
+          <Link to="/register"><MenuItem>REGISTER</MenuItem></Link>
+          <Link to="/login"><MenuItem>LOGIN</MenuItem></Link>
+          </div>
+          : <div>
+          
+          <Link to="/"><MenuItem onClick={handleClick}>LOGOUT</MenuItem></Link>
+          </div>
+}
           <Link to="/cart">
           <MenuItem>
             <Badge badgeContent={quantity} color="primary">

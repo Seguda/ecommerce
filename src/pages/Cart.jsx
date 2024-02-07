@@ -1,12 +1,18 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Add, Remove } from '@material-ui/icons';
 import styled from 'styled-components'
 import { Announcements } from '../components/Announcements';
 import Footer from '../components/Footer';
 import NavBar from '../components/NavBar';
 import { mobile } from '../responsive';
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import StripeCheckout from "react-stripe-checkout";
+import { userRequest } from "../requestMethods";
+import { useHistory } from "react-router";
+import { removeProduct, addQuantity, removeQuantity } from "../redux/cartRedux";
 
+
+const Key = process.env.REACT_APP_STRIPE;
 const Container = styled.div`
 `;
 const Wrapper = styled.div`
@@ -124,6 +130,14 @@ const SummaryItemText = styled.span`
 const SummaryItemPrice = styled.span`
 
 `;
+const RemoveButton = styled.button`
+    padding: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    border: ${(props) => props.type === "filled" && "none" };
+    background-color: ${(props) => props.type === "filled" ? "black" : "transparent"};
+    color: ${(props) => props.type === "filled" && "white" };
+`;
 const Button = styled.button`
     width:100%;
     padding:10px;
@@ -134,8 +148,47 @@ const Button = styled.button`
 `;
 
 export const Cart = () => {
-    const cart = useSelector(state=>state.cart)
-    //console.log(cart);
+    const cart = useSelector((state)=>state.cart);
+    const [stripeToken, setStripeToken] = useState(null);
+    const dispatch = useDispatch();
+    const history = useHistory();
+
+    const onToken = (token) => {
+        setStripeToken(token);
+    }
+    console.log(stripeToken);
+
+    useEffect(()=>{
+        const makeRequest =async ()=>{
+            try{
+                const res = await userRequest.post("/checkout/payment",{
+                    tokenId :stripeToken.id,
+                    amount:cart.total *100,
+                }) 
+                    history.push("/success", {
+                        stripeData: res.data,
+                        products: cart,});        
+            }catch{}
+        };
+        stripeToken && makeRequest();
+    }, [stripeToken,cart.total, cart,history])
+
+    const handleQuantity = (type, index) => {
+    if (type === "dec" && cart.products[index].quantity > 1) {
+        dispatch(removeQuantity({ index }));
+    } else {
+        dispatch(addQuantity({ index }));
+    }
+  };
+  const handleClick = (index) => {
+    dispatch(
+      removeProduct({ index })
+    );
+  };
+  const total = cart.products.reduce(
+  (accumulator, currentValue) => accumulator + currentValue.quantity * currentValue.price,
+  0,
+);
   return (
     <Container> 
         <Announcements/>
@@ -144,40 +197,48 @@ export const Cart = () => {
             <Title>MY BAG</Title>
             <Top>
                 <TopButton>CONTINUE SHOPPING</TopButton>
-                <TopTexts>
+                {/* <TopTexts>
                 <TopText>Shopping Bag(2)</TopText>
                 <TopText>My Wishlist(0)</TopText>
-                </TopTexts>
-                <TopButton type="filled">CHECKOUT NOW</TopButton>
+                </TopTexts> */}
+                {/* <TopButton type="filled">CHECKOUT NOW</TopButton> */}
             </Top>
             <Bottom>
                 <Info>
-                    {cart.products.map(obj =>(
-                    <Product key={obj.product._id}>
-                    <ProductDetail>
-                        <Image src={obj.product.img}/>
-                        <Details>
-                            <ProductName><b>Product:</b>{obj.product.title}</ProductName>
-                            <ProductId><b>ID:</b>{obj.product._id}</ProductId>
-                        </Details>
-                    </ProductDetail>
-                    <Price>
-                        <ProductAmountContainer>
-                            <Add />
-                            <ProductAmount>{obj.quantity}</ProductAmount>
-                            <Remove />
-                        </ProductAmountContainer>
-                        <ProductPrice> $ {obj.price * obj.quantity}</ProductPrice>
-                    </Price>
-                     </Product>
-                     ))}
-                    <Hr/> 
-                </Info>
+            {cart.products.map((product, index) => (
+              <Product key={product._id}>
+                <ProductDetail>
+                  <Image src={product.img} />
+                  <Details>
+                    <ProductName>
+                      <b>Product:</b> {product.title}
+                    </ProductName>
+                    {/* <ProductId>
+                      <b>ID:</b> {product._id}
+                    </ProductId> */}
+                  </Details>
+                </ProductDetail>
+                <Price>
+                  <ProductAmountContainer>
+              <Remove onClick={() => handleQuantity("dec", index)} />
+              <ProductAmount>{product.quantity}</ProductAmount>
+              <Add onClick={() => handleQuantity("inc", index)} />
+              </ProductAmountContainer>
+            <RemoveButton onClick={() => handleClick(index)}>REMOVE</RemoveButton>
+                  <ProductPrice>
+                    $ {product.price * product.quantity}
+                  </ProductPrice>
+                </Price>
+              </Product>
+            ))}
+            <Hr />
+          </Info>
+                
                 <Summary>
                     <SummaryTitle>ORDER SUMMARY</SummaryTitle>
                     <SummaryItem>
                         <SummaryItemText>Subtotal</SummaryItemText>
-                        <SummaryItemPrice>{cart.total}</SummaryItemPrice>
+                        <SummaryItemPrice>{`$${total}`}</SummaryItemPrice>
                     </SummaryItem>
                      <SummaryItem>
                         <SummaryItemText>Estimated Shipping</SummaryItemText>
@@ -189,9 +250,22 @@ export const Cart = () => {
                     </SummaryItem>
                      <SummaryItem type="total">
                         <SummaryItemText>Total</SummaryItemText>
-                        <SummaryItemPrice>{cart.total}</SummaryItemPrice>
+                        <SummaryItemPrice>{`$${total}`}</SummaryItemPrice>
                     </SummaryItem>
-                    <Button>CHECKOUT NOW</Button>
+                    
+                    <StripeCheckout 
+                        name="Ginkgo Ivy Design"
+                        image= "https://i.etsystatic.com/iusa/295af6/91124600/iusa_400x400.91124600_jrw7.jpg?version=0"
+                        billingAddress
+                        shippingAddress
+                        description ={`Your total is  $${cart.total}`}
+                        amount={cart.total * 100}
+                        token={onToken}
+                        stripeKey=  {Key}
+                    >
+                        <Button>CHECKOUT NOW</Button>
+                    </StripeCheckout>
+
                 </Summary>
             </Bottom>
         </Wrapper>
