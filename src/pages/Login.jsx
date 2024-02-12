@@ -86,10 +86,11 @@ export const Login = () => {
                 <Input placeholder = "password" type = "password" 
                 onChange ={(e) => setPassword(e.target.value)}/>
                 <Button onClick= {handleClick} disabled = {isFetching}>LOGIN</Button>
+            
                 {error && <Error>Something went wrong!</Error>}
                 <Link>DID YOU FORGET YOUR PASSWORD?</Link>
                 <Link>CREATE A NEW ACCOUNT</Link>
-            </Form>
+            </Form> 
         </Wrapper>
     </Container>
   )
