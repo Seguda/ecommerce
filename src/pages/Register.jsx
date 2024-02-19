@@ -64,13 +64,14 @@ export const Register = () => {
      const [email, setEmail ] = useState("");
      const [password, setPassword] = useState("");
      const dispatch = useDispatch();
-     const {isFetching, error} = useSelector((state) => state.user);
+     const {error} = useSelector((state) => state.user);
      const handleClick = (e) =>{
           e.preventDefault();
           register(dispatch, {username, email, password});
           console.log(email);
 
      }
+     
   return (
     <Container>
         <Wrapper>
@@ -90,7 +91,7 @@ export const Register = () => {
                 onChange ={(e) => setPassword(e.target.value)}/>
                 <Agreement>By creating an account, I consent to the processing of my personal data in accordance with the <b> PRIVACY POLICY </b>
                 </Agreement>
-                <Button onClick= {handleClick} disabled = {isFetching}>CREATE</Button>
+                <Button onClick= {handleClick}>CREATE</Button>
               {error && <Error>Something went wrong!</Error>}
         </Form>
         </Wrapper>

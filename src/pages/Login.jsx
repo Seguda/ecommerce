@@ -70,7 +70,7 @@ export const Login = () => {
      const [username, setUsername ] = useState("");
      const [password, setPassword] = useState("");
      const dispatch = useDispatch();
-     const {isFetching, error} = useSelector((state) => state.user);
+     const {loginFailure} = useSelector((state) => state.user.login);
      const handleClick = (e) =>{
           e.preventDefault();
           login(dispatch, {username, password});
@@ -85,9 +85,9 @@ export const Login = () => {
                 onChange ={(e) => setUsername(e.target.value)}/>
                 <Input placeholder = "password" type = "password" 
                 onChange ={(e) => setPassword(e.target.value)}/>
-                <Button onClick= {handleClick} disabled = {isFetching}>LOGIN</Button>
+                <Button onClick= {handleClick}>LOGIN</Button>
             
-                {error && <Error>Something went wrong!</Error>}
+                {loginFailure && <Error>Something went wrong!</Error>}
                 <Link>DID YOU FORGET YOUR PASSWORD?</Link>
                 <Link>CREATE A NEW ACCOUNT</Link>
             </Form> 

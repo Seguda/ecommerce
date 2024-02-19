@@ -2,41 +2,51 @@ import { createSlice } from "@reduxjs/toolkit";
 const userSlice = createSlice({
   name: "user",
   initialState: {
-    username: "",
-    email: "",
     currentUser: null,
-    isFetching: false,
-    isSuccess: false,
-    error: false,
+    login: {
+      loginSuccess: false,
+      loginFailure: false,
+      loginFailureMessage: "",
+    },
+    register: {
+      registerSuccess: false,
+      registerFailure: false,
+      registerFailureMessage: "",
+    },
   },
   reducers: {
     registerStart: (state) => {
-      state.isFetching = false;
+      state.register.registerSuccess = false;
+      state.register.registerFailure = false;
     },
     registerSuccess: (state, action) => {
-      state.isFetching = true;
-      state.email = action.payload.user.email;
-      state.username = action.payload.user.name;
+      state.register.registerSuccess = true;
+      state.register.registerFailure = false;
+      state.currentUser = action.payload;
     },
     registerFailure: (state) => {
-      state.isFetching = false;
-      state.error = true;
+      state.register.registerFailure = true;
+      state.register.registerSuccess = false;
+      state.register.registerFailureMessage = "";
     },
     loginStart: (state) => {
-      state.isFetching = true;
+      state.login.loginFailure = false;
+      state.login.loginSuccess = false;
     },
     loginSuccess: (state, action) => {
-      state.isFetching = false;
+      state.login.loginFailure = false;
+      state.login.loginSuccess = true;
       state.currentUser = action.payload;
     },
     loginFailure: (state) => {
-      state.isFetching = false;
-      state.error = true;
+      state.login.loginFailure = true;
+      state.login.loginSuccess = false;
+      state.login.loginFailureMessage = "";
     },
     logoutUser: (state) => {
       state.currentUser = null;
-      state.loading = false;
-      state.error = false;
+      state.login.loginFailure = false;
+      state.login.loginSuccess = false;
     },
   },
 });
