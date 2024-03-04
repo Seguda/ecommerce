@@ -44,16 +44,17 @@ const Title=styled.h3`
     margin-bottom:30px;
 `;
 const List = styled.ul`
-    margin:20px;
-    padding:20px;
+    margin-left:0px;
+    padding:0px;
     list-style:none;
-    display:flex;
+    display:flex-direction;
     flex-wrap:wrap;
 `;
 const ListItem = styled.li`
     width:70%;
     margin-bottom:10px;
-     margin:20px;
+     margin:10px;
+    align-items:left;
 `;
 const Right= styled.div`
     flex:1;
@@ -74,7 +75,7 @@ export const Footer = () => {
     <Container>
         <Left>
             <Logo>GinkgoIvyDesign</Logo>
-            <Description>There are ........</Description>
+            <Description>Handmade products respectful to nature and people!</Description>
             <SocialContainer>
                 <SocialIcon color="3B5999">
                     <Facebook/>
