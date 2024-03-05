@@ -58,8 +58,8 @@ const Error= styled.span`
 `;
 
 export const Register = () => {
-     const [name, setName ] = useState("");
-     const [lastname, setLastname ] = useState("");
+     const [ setName ] = useState("");
+     const [ setLastname ] = useState("");
      const [username, setUsername ] = useState("");
      const [email, setEmail ] = useState("");
      const [password, setPassword] = useState("");

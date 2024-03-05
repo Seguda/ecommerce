@@ -6,7 +6,6 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Cart from "./pages/Cart";
 import Success from "./pages/Success";
-import { logout } from "./redux/apiCalls";
 import {
   BrowserRouter as Router,
   Switch,
